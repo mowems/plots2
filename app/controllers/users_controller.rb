@@ -85,6 +85,12 @@ class UsersController < ApplicationController
             else
               current_user
             end
+    unless @user
+      flash[:error] = I18n.t('users_controller.no_user_found_name', username: params[:id])
+      redirect_to "/"
+      return
+    end
+
     if current_user && current_user.uid == @user.uid || logged_in_as(['admin'])
       render template: "users/edit"
     else
