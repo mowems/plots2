@@ -81,10 +81,14 @@ class UsersController < ApplicationController
   def edit
     @action = "update" # sets the form url
     @user = if params[:id] # admin only
-              User.find_by(username: params[:id])
-            else
-              current_user
-            end
+          if params[:id].to_s =~ /\A\d+\z/
+            User.find_by(id: params[:id])
+          else
+            User.find_by(username: params[:id])
+          end
+        else
+          current_user
+        end
     unless @user
       flash[:error] = I18n.t('users_controller.no_user_found_name', username: params[:id])
       redirect_to "/"
